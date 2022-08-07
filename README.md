@@ -19,7 +19,7 @@ Model loss and accuracy
 
 # Declarations
 This project does not receive any financial assistance. This is a fun project.
-# Species list [This model can identify 26 species--Up to the date (8/7/2022)]
+# Species list [This model can identify 25 species--Up to the date (8/7/2022)]
 0. 'Beluga whale',
  1. 'Blacktip shark',
  2. 'Blue whale',
@@ -41,9 +41,8 @@ This project does not receive any financial assistance. This is a fun project.
  18. 'Scallopedhammerhead shark',
  19. 'Sharpnose shark',
  20. 'Silky shark',
- 21. 'Spadenose shark',
- 22. 'Sperm whale',
- 23. 'Spinner shark',
- 24. 'pottail shark',
- 25. 'Tiger shark',
- 26. 'Zebra shark'
+ 21. 'Sperm whale',
+ 22. 'Spinner shark',
+ 23. 'pottail shark',
+ 24. 'Tiger shark',
+ 25. 'Zebra shark'

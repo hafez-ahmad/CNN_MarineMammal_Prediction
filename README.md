@@ -8,4 +8,4 @@ The convolutional Neural Network CNN works by getting an image, designating it s
 
 Model performance : Model loss and accuracy 
 
-![Loss and accuracy](loss_accuracy.png')
+![Loss and accuracy](loss_accuracy.jpg)

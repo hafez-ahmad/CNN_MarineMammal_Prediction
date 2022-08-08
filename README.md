@@ -2,7 +2,8 @@
 This is a basic Marine Mammal and Sharks detection-based on convolutional neural network model from static images.  The classification stage is now complete; after some months, I will update the entire code for mammal and shark detections.
 
 At first , I used VGG-19 pretrained CNN model, then I built a new simple CNN model.
-I plan to integrate with major sharks and Rays species. After that I will make a web app for automated detection and identification. When I used sharks of the world book and sharks of the Arabian sea to identify sharks last year, I had a nightmare with shark identification. 
+
+I plan to integrate with major sharks and Rays species. After that I will make a web app for automated detection and identification. When I used sharks of the world book and sharks of the Arabian sea to identify sharks last year, I had a nightmare with sharks and Rays identification. 
 
 The convolutional Neural Network CNN works by getting an image, designating it some weightage based on the different objects of the image, and then distinguishing them from each other.
 # CNN model configuration 

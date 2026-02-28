@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hafez Ahmad — Enhanced Blog</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --text: #142033;
+      --muted: #5d6d86;
+      --accent: #2b6ee7;
+      --accent-soft: #eaf1ff;
+      --line: #d8e2f3;
+      --chip: #eff4ff;
+      --shadow: 0 10px 30px rgba(23, 49, 94, 0.08);
+    }
+
+    body.dark {
+      --bg: #0d1425;
+      --surface: #151f35;
+      --text: #ecf2ff;
+      --muted: #a9b6cf;
+      --accent: #6da2ff;
+      --accent-soft: #1d2b4d;
+      --line: #243556;
+      --chip: #1c2a46;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2b6ee7, #53b2ff);
+      z-index: 1000;
+      transition: width 0.08s linear;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.3rem, 2.6vw, 2rem);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input-wrap {
+      position: relative;
+      min-width: 260px;
+      flex: 1;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      box-shadow: var(--shadow);
+    }
+
+    .input-wrap span {
+      position: absolute;
+      left: 12px;
+      top: 9px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 8px;
+      align-items: center;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: var(--chip);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.86rem;
+    }
+
+    .chip.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .meta {
+      margin: 8px 0 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .posts.grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .posts.list {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .posts.list .card {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 1.03rem;
+    }
+
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.35;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      border: 1px solid transparent;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .bookmark {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      box-shadow: none;
+    }
+
+    .bookmark.active {
+      border-color: #ffb74d;
+      color: #e08a00;
+      background: #fff8ea;
+    }
+
+    .top {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display: none;
+      z-index: 99;
+    }
+
+    .empty {
+      padding: 36px 14px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    kbd {
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.75rem;
+      background: var(--surface);
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="container">
+    <header>
+      <h1>Hafez Ahmad — Interactive Blog Explorer</h1>
+      <div class="controls" style="width:min(700px,100%);">
+        <div class="input-wrap">
+          <span>🔍</span>
+          <input id="searchInput" type="search" placeholder="Search posts… (press /)" aria-label="Search posts" />
+        </div>
+        <button id="sortBtn" title="Cycle sorting">Sort: Newest</button>
+        <button id="viewBtn" title="Toggle layout">View: ⊞ Grid</button>
+        <button id="themeBtn" title="Toggle dark mode">🌙 Dark</button>
+      </div>
+    </header>
+
+    <div class="toolbar" id="tagFilters"></div>
+    <p class="meta" id="resultMeta">Showing 0 of 0 posts</p>
+
+    <main id="posts" class="posts grid"></main>
+    <button class="top" id="topBtn">↑ Top</button>
+  </div>
+
+  <script>
+    const posts = [
+      { id: 1, title: "Detecting Marine Mammals with CNNs", date: "2025-01-08", tags: ["ML", "Ecology"], desc: "Convolutional neural pipelines for whale image identification from aerial datasets." },
+      { id: 2, title: "Remote Sensing for Ocean Biodiversity", date: "2024-12-18", tags: ["Remote Sensing", "Analysis"], desc: "Satellite-derived indicators and practical workflows for species distribution research." },
+      { id: 3, title: "Interpretable AI for Conservation", date: "2024-11-01", tags: ["ML", "Analysis"], desc: "How saliency maps and feature attribution improve trust in ecological models." },
+      { id: 4, title: "Noise Robustness in Underwater Classification", date: "2024-10-09", tags: ["ML", "Audio"], desc: "Improving model stability under variable ocean acoustic conditions." },
+      { id: 5, title: "A Practical Guide to Label Quality", date: "2024-09-11", tags: ["Workflow", "Analysis"], desc: "Reducing annotation noise and ensuring consistency in collaborative datasets." },
+      { id: 6, title: "Temporal Trends in Whale Sightings", date: "2024-08-20", tags: ["Ecology", "Statistics"], desc: "Seasonality signals and migration insights from multi-year surveys." },
+      { id: 7, title: "From Notebook to Reproducible Pipeline", date: "2024-07-15", tags: ["Workflow", "Engineering"], desc: "Project structuring, environment pinning, and transparent ML experimentation." },
+      { id: 8, title: "Class Imbalance in Marine Datasets", date: "2024-06-29", tags: ["ML", "Statistics"], desc: "Balancing rare species classes using augmentation and loss engineering." },
+      { id: 9, title: "Field Notes: Drone Data Collection", date: "2024-05-17", tags: ["Ecology", "Workflow"], desc: "Operational tips for collecting cleaner imagery under real weather constraints." },
+      { id: 10, title: "Evaluating Model Drift Over Time", date: "2024-04-25", tags: ["Analysis", "Engineering"], desc: "Monitoring deployment performance and planning retraining schedules." },
+      { id: 11, title: "Choosing Metrics Beyond Accuracy", date: "2024-03-12", tags: ["Analysis", "Statistics"], desc: "Precision-recall tradeoffs and calibration in class-skewed tasks." },
+      { id: 12, title: "High-Resolution Habitat Mapping", date: "2024-02-01", tags: ["Remote Sensing", "Ecology"], desc: "Combining multispectral imagery and handcrafted features for habitat segmentation." },
+      { id: 13, title: "Active Learning for Faster Labeling", date: "2023-11-22", tags: ["ML", "Workflow"], desc: "Prioritize uncertain samples to reduce annotation effort while improving performance." },
+      { id: 14, title: "Transfer Learning in Low-Data Regimes", date: "2023-10-18", tags: ["ML", "Engineering"], desc: "Selecting pre-trained backbones and fine-tuning strategies for ecological imagery." },
+      { id: 15, title: "Open Data Ethics in Conservation AI", date: "2023-08-09", tags: ["Ethics", "Analysis"], desc: "Balancing transparency, sensitive species protection, and community stewardship." },
+      { id: 16, title: "Benchmarking Inference Speed on Edge Devices", date: "2023-06-30", tags: ["Engineering", "ML"], desc: "Latency, memory, and deployment constraints for near-real-time field predictions." }
+    ];
+
+    const state = {
+      query: "",
+      selectedTag: "All",
+      sortMode: 0,
+      view: "grid",
+      bookmarks: new Set(JSON.parse(sessionStorage.getItem("blog_bookmarks") || "[]"))
+    };
+
+    const sortModes = [
+      { label: "Newest", fn: (a, b) => new Date(b.date) - new Date(a.date) },
+      { label: "Oldest", fn: (a, b) => new Date(a.date) - new Date(b.date) },
+      { label: "A–Z", fn: (a, b) => a.title.localeCompare(b.title) }
+    ];
+
+    const postsEl = document.getElementById("posts");
+    const searchEl = document.getElementById("searchInput");
+    const metaEl = document.getElementById("resultMeta");
+    const tagFiltersEl = document.getElementById("tagFilters");
+    const sortBtn = document.getElementById("sortBtn");
+    const viewBtn = document.getElementById("viewBtn");
+    const themeBtn = document.getElementById("themeBtn");
+    const topBtn = document.getElementById("topBtn");
+
+    const allTags = ["All", ...new Set(posts.flatMap(p => p.tags))];
+
+    function setTheme(init = false) {
+      const saved = localStorage.getItem("blog_theme");
+      if (init && saved === "dark") document.body.classList.add("dark");
+      const dark = document.body.classList.contains("dark");
+      themeBtn.textContent = dark ? "☀️ Light" : "🌙 Dark";
+    }
+
+    function renderTags() {
+      tagFiltersEl.innerHTML = "";
+      allTags.forEach(tag => {
+        const chip = document.createElement("button");
+        chip.className = "chip" + (tag === state.selectedTag ? " active" : "");
+        chip.textContent = tag;
+        chip.onclick = () => {
+          state.selectedTag = tag;
+          render();
+        };
+        tagFiltersEl.appendChild(chip);
+      });
+    }
+
+    function filteredPosts() {
+      const q = state.query.trim().toLowerCase();
+      return posts
+        .filter(p => {
+          const text = `${p.title} ${p.desc} ${p.tags.join(" ")}`.toLowerCase();
+          const queryMatch = !q || text.includes(q);
+          const tagMatch = state.selectedTag === "All" || p.tags.includes(state.selectedTag);
+          return queryMatch && tagMatch;
+        })
+        .sort(sortModes[state.sortMode].fn);
+    }
+
+    function toggleBookmark(id) {
+      if (state.bookmarks.has(id)) state.bookmarks.delete(id);
+      else state.bookmarks.add(id);
+      sessionStorage.setItem("blog_bookmarks", JSON.stringify([...state.bookmarks]));
+      render();
+    }
+
+    function render() {
+      const list = filteredPosts();
+      postsEl.className = `posts ${state.view}`;
+      postsEl.innerHTML = "";
+
+      if (list.length === 0) {
+        postsEl.innerHTML = `<div class="empty">No posts match your filters.<br>Try another search or tag.</div>`;
+      } else {
+        list.forEach(post => {
+          const card = document.createElement("article");
+          card.className = "card";
+
+          const tags = post.tags.map(t => `<span class="tag">${t}</span>`).join("");
+          const marked = state.bookmarks.has(post.id);
+
+          card.innerHTML = `
+            <div>
+              <h2 class="title">${post.title}</h2>
+              <p class="desc">${post.desc}</p>
+            </div>
+            <div class="tags">${tags}</div>
+            <div class="row">
+              <span>${post.date}</span>
+              <button class="bookmark ${marked ? "active" : ""}" data-id="${post.id}">${marked ? "🔖 Saved" : "🔖 Save"}</button>
+            </div>
+          `;
+
+          const btn = card.querySelector(".bookmark");
+          btn.addEventListener("click", () => toggleBookmark(post.id));
+          postsEl.appendChild(card);
+        });
+      }
+
+      metaEl.textContent = `Showing ${list.length} of ${posts.length} posts`;
+      sortBtn.textContent = `Sort: ${sortModes[state.sortMode].label}`;
+      viewBtn.textContent = state.view === "grid" ? "View: ⊞ Grid" : "View: ☰ List";
+      renderTags();
+    }
+
+    searchEl.addEventListener("input", (e) => {
+      state.query = e.target.value;
+      render();
+    });
+
+    sortBtn.addEventListener("click", () => {
+      state.sortMode = (state.sortMode + 1) % sortModes.length;
+      render();
+    });
+
+    viewBtn.addEventListener("click", () => {
+      state.view = state.view === "grid" ? "list" : "grid";
+      render();
+    });
+
+    themeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("blog_theme", document.body.classList.contains("dark") ? "dark" : "light");
+      setTheme();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement !== searchEl) {
+        e.preventDefault();
+        searchEl.focus();
+      }
+      if (e.key === "Escape") {
+        searchEl.blur();
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      const st = window.scrollY;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById("progress").style.width = `${h > 0 ? (st / h) * 100 : 0}%`;
+      topBtn.style.display = st > 350 ? "inline-flex" : "none";
+    });
+
+    topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    setTheme(true);
+    render();
+  </script>
+</body>
+</html>
